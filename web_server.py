@@ -71,8 +71,11 @@ if os.getenv('USE_REDIS_CACHE', 'False').lower() == 'true' and os.getenv('REDIS_
         'CACHE_REDIS_URL': os.getenv('REDIS_URL'),
         'CACHE_DEFAULT_TIMEOUT': 300
     }
+    print(f"使用Redis缓存: {os.getenv('REDIS_URL')}")
+else:
+    print("使用内存缓存")
 
-cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+cache = Cache(config=cache_config)
 cache.init_app(app)
 
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
