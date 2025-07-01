@@ -24,9 +24,9 @@ logging.basicConfig(level=logging.INFO,
 class ScenarioPredictor:
     def __init__(self, analyzer, openai_api_key=None, openai_model=None):
         self.analyzer = analyzer
-        self.openai_api_key = os.getenv('OPENAI_API_KEY', os.getenv('OPENAI_API_KEY'))
-        self.openai_api_url = os.getenv('OPENAI_API_URL', 'https://api.openai.com/v1')
-        self.openai_model = os.getenv('OPENAI_API_MODEL', 'gemini-2.0-pro-exp-02-05')
+        self.openai_api_key = os.getenv('DEEPSEEK_API_KEY', os.getenv('OPENAI_API_KEY', openai_api_key or 'sk-bd2a7e8394c745338a15f926c0e611a0'))
+        self.openai_api_url = os.getenv('DEEPSEEK_API_URL', os.getenv('OPENAI_API_URL', 'https://api.deepseek.com/v1'))
+        self.openai_model = os.getenv('DEEPSEEK_API_MODEL', os.getenv('OPENAI_API_MODEL', 'deepseek-chat'))
         # logging.info(f"scenario_predictor初始化完成：「{self.openai_api_key} {self.openai_api_url} {self.openai_model}」")
 
     def generate_scenarios(self, stock_code, market_type='A', days=60):

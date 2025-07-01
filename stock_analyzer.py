@@ -38,12 +38,12 @@ class StockAnalyzer:
         # 加载环境变量
         load_dotenv()
 
-        # 设置 OpenAI API (原 Gemini API)
-        self.openai_api_key = os.getenv('OPENAI_API_KEY', os.getenv('OPENAI_API_KEY'))
-        self.openai_api_url = os.getenv('OPENAI_API_URL', 'https://api.openai.com/v1')
-        self.openai_model = os.getenv('OPENAI_API_MODEL', 'gemini-2.0-pro-exp-02-05')
-        self.function_call_model = os.getenv('FUNCTION_CALL_MODEL','gpt-4o')
-        self.news_model = os.getenv('NEWS_MODEL')
+        # 设置 DeepSeek API (替代 OpenAI API)
+        self.openai_api_key = os.getenv('DEEPSEEK_API_KEY', os.getenv('OPENAI_API_KEY', 'sk-bd2a7e8394c745338a15f926c0e611a0'))
+        self.openai_api_url = os.getenv('DEEPSEEK_API_URL', os.getenv('OPENAI_API_URL', 'https://api.deepseek.com/v1'))
+        self.openai_model = os.getenv('DEEPSEEK_API_MODEL', os.getenv('OPENAI_API_MODEL', 'deepseek-chat'))
+        self.function_call_model = os.getenv('FUNCTION_CALL_MODEL', 'deepseek-chat')
+        self.news_model = os.getenv('NEWS_MODEL', 'deepseek-chat')
 
         # 配置参数
         self.params = {

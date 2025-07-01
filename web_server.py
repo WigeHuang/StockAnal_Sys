@@ -94,8 +94,8 @@ if 'analyzer' not in globals():
 # 初始化模块实例
 fundamental_analyzer = FundamentalAnalyzer()
 capital_flow_analyzer = CapitalFlowAnalyzer()
-scenario_predictor = ScenarioPredictor(analyzer, os.getenv('OPENAI_API_KEY'), os.getenv('OPENAI_API_MODEL'))
-stock_qa = StockQA(analyzer, os.getenv('OPENAI_API_KEY'), os.getenv('OPENAI_API_MODEL'))
+scenario_predictor = ScenarioPredictor(analyzer, os.getenv('DEEPSEEK_API_KEY', 'sk-bd2a7e8394c745338a15f926c0e611a0'), os.getenv('DEEPSEEK_API_MODEL', 'deepseek-chat'))
+stock_qa = StockQA(analyzer, os.getenv('DEEPSEEK_API_KEY', 'sk-bd2a7e8394c745338a15f926c0e611a0'), os.getenv('DEEPSEEK_API_MODEL', 'deepseek-chat'))
 risk_monitor = RiskMonitor(analyzer)
 index_industry_analyzer = IndexIndustryAnalyzer(analyzer)
 industry_analyzer = IndustryAnalyzer()

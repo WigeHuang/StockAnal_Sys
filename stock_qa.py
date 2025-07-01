@@ -19,10 +19,10 @@ from datetime import datetime
 class StockQA:
     def __init__(self, analyzer, openai_api_key=None, openai_model=None):
         self.analyzer = analyzer
-        self.openai_api_key = os.getenv('OPENAI_API_KEY', openai_api_key)
-        self.openai_api_url = os.getenv('OPENAI_API_URL', 'https://api.openai.com/v1')
-        self.openai_model = os.getenv('OPENAI_API_MODEL', openai_model or 'gpt-4o')
-        self.function_call_model = os.getenv('FUNCTION_CALL_MODEL', openai_model or 'gpt-4o')
+        self.openai_api_key = os.getenv('DEEPSEEK_API_KEY', os.getenv('OPENAI_API_KEY', openai_api_key or 'sk-bd2a7e8394c745338a15f926c0e611a0'))
+        self.openai_api_url = os.getenv('DEEPSEEK_API_URL', os.getenv('OPENAI_API_URL', 'https://api.deepseek.com/v1'))
+        self.openai_model = os.getenv('DEEPSEEK_API_MODEL', os.getenv('OPENAI_API_MODEL', openai_model or 'deepseek-chat'))
+        self.function_call_model = os.getenv('FUNCTION_CALL_MODEL', 'deepseek-chat')
         self.serp_api_key = os.getenv('SERP_API_KEY')
         self.tavily_api_key = os.getenv('TAVILY_API_KEY')
         self.max_qa_rounds = int(os.getenv('MAX_QA', '10'))  # 默认保留10轮对话

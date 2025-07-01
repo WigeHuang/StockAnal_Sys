@@ -9,17 +9,17 @@ import os
 import sys
 from dotenv import load_dotenv
 
-def test_openai_config():
-    """测试OpenAI配置"""
-    print("🔧 测试OpenAI配置...")
+def test_deepseek_config():
+    """测试DeepSeek配置"""
+    print("🔧 测试DeepSeek配置...")
     
     # 加载环境变量
     load_dotenv()
     
     # 检查API密钥
-    api_key = os.getenv('OPENAI_API_KEY')
+    api_key = os.getenv('DEEPSEEK_API_KEY', os.getenv('OPENAI_API_KEY', 'sk-bd2a7e8394c745338a15f926c0e611a0'))
     if not api_key:
-        print("❌ 错误: 未找到OPENAI_API_KEY")
+        print("❌ 错误: 未找到DEEPSEEK_API_KEY")
         return False
     
     if not api_key.startswith('sk-'):
@@ -29,7 +29,7 @@ def test_openai_config():
     print(f"✅ API密钥已配置: {api_key[:20]}...")
     
     # 检查模型配置
-    model = os.getenv('OPENAI_API_MODEL', 'gpt-4o')
+    model = os.getenv('DEEPSEEK_API_MODEL', os.getenv('OPENAI_API_MODEL', 'deepseek-chat'))
     print(f"✅ 模型配置: {model}")
     
     # 测试API调用
@@ -39,7 +39,7 @@ def test_openai_config():
         
         # 设置API配置
         openai.api_key = api_key
-        openai.api_base = os.getenv('OPENAI_API_URL', 'https://api.openai.com/v1')
+        openai.api_base = os.getenv('DEEPSEEK_API_URL', os.getenv('OPENAI_API_URL', 'https://api.deepseek.com/v1'))
         
         # 简单测试调用
         print("🧪 测试API调用...")
@@ -83,24 +83,24 @@ def main():
     """主函数"""
     print("🚀 开始AI配置测试...\n")
     
-    # 测试OpenAI配置
-    openai_ok = test_openai_config()
+    # 测试DeepSeek配置
+    deepseek_ok = test_deepseek_config()
     
     # 测试股票分析器
     analyzer_ok = test_stock_analyzer()
     
     print("\n" + "="*50)
     print("📋 测试结果总结:")
-    print(f"OpenAI配置: {'✅ 正常' if openai_ok else '❌ 异常'}")
+    print(f"DeepSeek配置: {'✅ 正常' if deepseek_ok else '❌ 异常'}")
     print(f"股票分析器: {'✅ 正常' if analyzer_ok else '❌ 异常'}")
     
-    if openai_ok and analyzer_ok:
+    if deepseek_ok and analyzer_ok:
         print("\n🎉 所有测试通过！AI功能已准备就绪。")
         print("💡 您可以访问 http://localhost:8888 开始使用系统。")
     else:
         print("\n⚠️ 部分测试失败，请检查配置。")
     
-    return openai_ok and analyzer_ok
+    return deepseek_ok and analyzer_ok
 
 if __name__ == "__main__":
     success = main()
