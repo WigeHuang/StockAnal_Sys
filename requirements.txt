@@ -3,7 +3,7 @@ pandas>=2.0.0
 scipy>=1.13.0
 akshare>=1.16.56
 tqdm>=4.65.0
-openai>=0.28.0
+openai==0.28.0
 requests>=2.31.0
 python-dotenv>=1.0.0
 flask>=3.0.0
