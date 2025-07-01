@@ -109,16 +109,78 @@ class StockAnalyzer:
             else:
                 raise ValueError(f"不支持的市场类型: {market_type}")
 
-            # 重命名列名以匹配分析需求
-            df = df.rename(columns={
-                "日期": "date",
-                "开盘": "open",
-                "收盘": "close",
-                "最高": "high",
-                "最低": "low",
-                "成交量": "volume",
-                "成交额": "amount"
-            })
+            # 检查数据是否为空
+            if df.empty:
+                self.logger.error(f"获取股票 {stock_code} 数据为空")
+                raise Exception(f"获取股票 {stock_code} 数据为空")
+
+            # 记录原始列名用于调试
+            self.logger.info(f"股票 {stock_code} 原始列名: {list(df.columns)}")
+
+            # 检查数据是否包含必要的列，支持多种可能的列名格式
+            date_columns = ['日期', 'date', 'Date', 'DATE']
+            open_columns = ['开盘', 'open', 'Open', 'OPEN']
+            close_columns = ['收盘', 'close', 'Close', 'CLOSE']
+            high_columns = ['最高', 'high', 'High', 'HIGH']
+            low_columns = ['最低', 'low', 'Low', 'LOW']
+            volume_columns = ['成交量', 'volume', 'Volume', 'VOLUME']
+            
+            # 查找实际存在的列名
+            actual_date_col = next((col for col in date_columns if col in df.columns), None)
+            actual_open_col = next((col for col in open_columns if col in df.columns), None)
+            actual_close_col = next((col for col in close_columns if col in df.columns), None)
+            actual_high_col = next((col for col in high_columns if col in df.columns), None)
+            actual_low_col = next((col for col in low_columns if col in df.columns), None)
+            actual_volume_col = next((col for col in volume_columns if col in df.columns), None)
+            
+            # 检查是否找到所有必要的列
+            missing_columns = []
+            if not actual_date_col:
+                missing_columns.append('日期')
+            if not actual_open_col:
+                missing_columns.append('开盘')
+            if not actual_close_col:
+                missing_columns.append('收盘')
+            if not actual_high_col:
+                missing_columns.append('最高')
+            if not actual_low_col:
+                missing_columns.append('最低')
+            if not actual_volume_col:
+                missing_columns.append('成交量')
+                
+            if missing_columns:
+                self.logger.error(f"股票 {stock_code} 缺少必要列: {missing_columns}")
+                self.logger.error(f"实际列名: {list(df.columns)}")
+                raise Exception(f"数据格式错误，缺少必要列: {missing_columns}")
+
+            # 查找成交额列（可选）
+            amount_columns = ['成交额', 'amount', 'Amount', 'AMOUNT', '成交金额']
+            actual_amount_col = next((col for col in amount_columns if col in df.columns), None)
+            
+            # 使用实际找到的列名进行映射
+            column_mapping = {
+                actual_date_col: "date",
+                actual_open_col: "open",
+                actual_close_col: "close",
+                actual_high_col: "high",
+                actual_low_col: "low",
+                actual_volume_col: "volume"
+            }
+            
+            # 如果找到成交额列，也进行映射
+            if actual_amount_col:
+                column_mapping[actual_amount_col] = "amount"
+            
+            # 重命名列
+            df = df.rename(columns=column_mapping)
+            
+            # 记录映射结果
+            self.logger.info(f"股票 {stock_code} 列名映射完成: {column_mapping}")
+
+            # 检查重命名后的列
+            if 'date' not in df.columns:
+                self.logger.error(f"重命名后仍缺少 'date' 列，当前列名: {list(df.columns)}")
+                raise Exception("数据格式错误，无法找到日期列")
 
             # 确保日期格式正确
             df['date'] = pd.to_datetime(df['date'])
