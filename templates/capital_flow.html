@@ -27,9 +27,14 @@
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">周期</span>
                                 <select class="form-select" id="period-select">
-                                    <option value="10日排行" selected>10日排行</option>
-                                    <option value="5日排行">5日排行</option>
+                                    <option value="即时">即时</option>
                                     <option value="3日排行">3日排行</option>
+                                    <option value="5日排行">5日排行</option>
+                                    <option value="10日排行" selected>10日排行</option>
+                                    <option value="20日排行">20日排行</option>
+                                    <option value="30日排行">30日排行 (映射到20日)</option>
+                                    <option value="60日排行">60日排行 (映射到20日)</option>
+                                    <option value="90日排行">90日排行 (映射到20日)</option>
                                 </select>
                             </div>
                         </div>
@@ -200,7 +205,7 @@
 <script>
     $(document).ready(function() {
         // 默认加载概念资金流向
-        loadConceptFundFlow('90日排行');
+        loadConceptFundFlow('即时');
 
         // 表单提交事件
         $('#capital-flow-form').submit(function(e) {

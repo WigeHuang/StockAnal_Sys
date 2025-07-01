@@ -29,8 +29,20 @@ class CapitalFlowAnalyzer:
                 if (datetime.now() - cache_time).total_seconds() < 3600:
                     return cached_data
 
+            # 参数映射：将不支持的参数映射到支持的参数
+            period_mapping = {
+                "90日排行": "20日排行",  # 90日排行不支持，映射到20日排行
+                "60日排行": "20日排行",  # 60日排行不支持，映射到20日排行
+                "30日排行": "20日排行",  # 30日排行不支持，映射到20日排行
+            }
+            
+            # 使用映射后的参数
+            mapped_period = period_mapping.get(period, period)
+            if mapped_period != period:
+                self.logger.info(f"Mapping period '{period}' to '{mapped_period}' for compatibility")
+            
             # 从akshare获取数据
-            concept_data = ak.stock_fund_flow_concept(symbol=period)
+            concept_data = ak.stock_fund_flow_concept(symbol=mapped_period)
 
             # 处理数据
             result = []
