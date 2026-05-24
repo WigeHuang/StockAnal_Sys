@@ -1552,113 +1552,22 @@ def get_latest_news():
                          any(keyword in (news.get('content', '') or '') for keyword in important_keywords)]
 
         if news_type == 'hotspot':
-            # 过滤舆情热点相关新闻
-            hotspot_keywords = [
-                # 舆情直接相关词
-                '舆情', '舆论', '热点', '热议', '热搜', '话题',
+            # 从 JSON 文件加载舆情热点关键词
+            hotspot_file = os.path.join(BASE_DIR, 'data', 'hotspot_keywords.json')
+            try:
+                with open(hotspot_file, 'r', encoding='utf-8') as f:
+                    hotspot_keywords = json.load(f)
+            except Exception as e:
+                app.logger.error(f"加载热点关键词文件失败: {e}")
+                hotspot_keywords = []
 
-                # 关注度相关词
-                '关注度', '高度关注', '引发关注', '市场关注', '持续关注', '重点关注',
-                '密切关注', '广泛关注', '集中关注', '投资者关注',
+            def has_keyword(item):
+                title = item.get('title', '') or ''
+                content = item.get('content', '') or ''
+                return any(keyword in title for keyword in hotspot_keywords) or \
+                    any(keyword in content for keyword in hotspot_keywords)
 
-                # 传播相关词
-                '爆文', '刷屏', '刷爆', '冲上热搜', '纷纷转发', '广泛传播',
-                '热传', '病毒式传播', '迅速扩散', '高度转发',
-
-                # 社交媒体相关词
-                '微博热搜', '微博话题', '知乎热议', '抖音热门', '今日头条', '朋友圈热议',
-                '微信热文', '社交媒体热议', 'APP热榜',
-
-                # 情绪相关词
-                '情绪高涨', '市场情绪', '投资情绪', '恐慌情绪', '亢奋情绪',
-                '乐观情绪', '悲观情绪', '投资者情绪', '公众情绪',
-
-                # 突发事件相关
-                '突发', '紧急', '爆发', '突现', '紧急事态', '快讯', '突发事件',
-                '重大事件', '意外事件', '突发新闻',
-
-                # 行业动态相关
-                '行业动向', '市场动向', '板块轮动', '资金流向', '产业趋势',
-                '政策导向', '监管动态', '风口', '市场风向',
-
-                # 舆情分析相关
-                '舆情分析', '舆情监测', '舆情报告', '舆情数据', '舆情研判',
-                '舆情趋势', '舆情预警', '舆情通报', '舆情简报',
-
-                # 市场焦点相关
-                '市场焦点', '焦点话题', '焦点股', '焦点事件', '投资焦点',
-                '关键词', '今日看点', '重点关切', '核心议题',
-
-                # 传统媒体相关
-                '头版头条', '财经头条', '要闻', '重磅新闻', '独家报道',
-                '深度报道', '特别关注', '重点报道', '专题报道',
-
-                # 特殊提示词
-                '投资舆情', '今日舆情', '今日热点', '投资热点', '市场热点',
-                '每日热点', '关注要点', '交易热点', '今日重点',
-
-                # AI基础技术
-                '人工智能', 'AI', '机器学习', '深度学习', '神经网络', '大模型',
-                'LLM', '大语言模型', '生成式AI', '生成式人工智能', '算法',
-
-                # AI细分技术
-                '自然语言处理', 'NLP', '计算机视觉', 'CV', '语音识别',
-                '图像生成', '多模态', '强化学习', '联邦学习', '知识图谱',
-                '边缘计算', '量子计算', '类脑计算', '神经形态计算',
-
-                # 热门AI模型/产品
-                'GPT', 'GPT-4', 'GPT-5', 'GPT-4o', 'ChatGPT', 'Claude',
-                'Gemini', 'Llama', 'Llama3', 'Stable Diffusion', 'DALL-E',
-                'Midjourney', 'Sora', 'Anthropic', 'Runway', 'Copilot',
-                'Bard', 'GLM', 'Ernie', '文心一言', '通义千问', '讯飞星火','DeepSeek',
-
-                # AI应用领域
-                'AIGC', '智能驾驶', '自动驾驶', '智能助手', '智能医疗',
-                '智能制造', '智能客服', '智能金融', '智能教育',
-                '智能家居', '机器人', 'RPA', '数字人', '虚拟人',
-                '智能安防', '计算机辅助',
-
-                # AI硬件
-                'AI芯片', 'GPU', 'TPU', 'NPU', 'FPGA', '算力', '推理芯片',
-                '训练芯片', 'NVIDIA', '英伟达', 'AMD', '高性能计算',
-
-                # AI企业
-                'OpenAI', '微软AI', '谷歌AI', 'Google DeepMind', 'Meta AI',
-                '百度智能云', '阿里云AI', '腾讯AI', '华为AI', '商汤科技',
-                '旷视科技', '智源人工智能', '云从科技', '科大讯飞',
-
-                # AI监管/伦理
-                'AI监管', 'AI伦理', 'AI安全', 'AI风险', 'AI治理',
-                'AI对齐', 'AI偏见', 'AI隐私', 'AGI', '通用人工智能',
-                '超级智能', 'AI法规', 'AI责任', 'AI透明度',
-
-                # AI市场趋势
-                'AI创业', 'AI投资', 'AI融资', 'AI估值', 'AI泡沫',
-                'AI风口', 'AI赛道', 'AI产业链', 'AI应用落地', 'AI转型',
-                'AI红利', 'AI市值', 'AI概念股',
-
-                # 新兴AI概念
-                'AI Agent', 'AI智能体', '多智能体', '自主AI',
-                'AI搜索引擎', 'RAG', '检索增强生成', '思维链', 'CoT',
-                '大模型微调', '提示工程', 'Prompt Engineering',
-                '基础模型', 'Foundation Model', '小模型', '专用模型',
-
-                # 人工智能舆情专用
-                'AI热点', 'AI风潮', 'AI革命', 'AI热议', 'AI突破',
-                'AI进展', 'AI挑战', 'AI竞赛', 'AI战略', 'AI政策',
-                'AI风险', 'AI恐慌', 'AI威胁', 'AI机遇'
-            ]
-
-            # 在API处理中使用
-            if news_type == 'hotspot':
-                # 过滤舆情热点相关新闻
-                def has_keyword(item):
-                    title = item.get('title', '')
-                    content = item.get('content', '')
-                    return any(keyword in title for keyword in hotspot_keywords) or \
-                        any(keyword in content for keyword in hotspot_keywords)
-
-                news_data = [news for news in news_data if has_keyword(news)]
+            news_data = [news for news in news_data if has_keyword(news)]
 
         return jsonify({'success': True, 'news': news_data})
     except Exception as e:
